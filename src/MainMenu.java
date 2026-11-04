@@ -1,22 +1,26 @@
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Scanner;
 
-public class MainMenu {
+public class MainMenu { 
     public static void main(String[] args) throws Exception {
 
         String option = "0";
         Scanner scanner = new Scanner(System.in);
 
-        String s1,s2,s3,idp="0",idt="0";
-        int n1,n2;
+        String s1,s2,s3;
+        int n1,n2,idp=0,idt=0;
 
-        HashMap<String, Team> teams = new HashMap<>();
-        HashMap<String, Player> players = new HashMap<>();
+        HashMap<Integer, Team> teams = new HashMap<>();
+        HashMap<Integer, Player> players = new HashMap<>();
+        HashMap<String, Integer> teamsIndex = new HashMap<>();
+        HashMap<String, Integer> playersIndex = new HashMap<>();
+        HashMap<Integer, List<String>> transfers = new HashMap<>();
         
         System.out.println("\nWelcome to the Players Database!");
         
-        while(option != "5"){
+        while(!option.equals("5")){
             
             System.out.println("\nChoose an option:\n 1. Add\n 2. Show\n 3. Edit\n 4. Transfer History\n 5. Exit\n");
             option = scanner.nextLine();
@@ -24,7 +28,7 @@ public class MainMenu {
             switch (option) {
                 //Option ADD
                 case "1":
-                    System.out.println("Choose an option:\n 1. Add Team\n 2. Add Player\n 3. Back");
+                    System.out.println("\nChoose an option:\n 1. Add Team\n 2. Add Player\n 3. Back");
                     option = scanner.nextLine();
 
                     switch (option) {
@@ -40,8 +44,9 @@ public class MainMenu {
                             n2=scanner.nextInt();
                             scanner.nextLine();
 
-                            idt=String.valueOf(Integer.parseInt(idt)+1);
-                            teams.put(s1, new Team(s1,s2,n1,n2,idt));
+                            ++idt;
+                            teams.put(idt, new Team(s1,s2,n1,n2));
+                            teamsIndex.put(s1, idt);
 
                             break;
                         //Option ADD PLAYER
@@ -56,14 +61,19 @@ public class MainMenu {
                             System.out.println("Team: ");
                             while(true){
                                 s3=scanner.nextLine();
-                                if(teams.containsKey(s3)){
+                                if(teamsIndex.containsKey(s3)){
                                     break;
                                 }
                                 System.out.println("Team not found. Please enter a valid team name:");
                             }
 
-                            idp=String.valueOf(Integer.parseInt(idp)+1);
-                            players.put(s2, new Player(s1,s2,n1,s3,idp));
+                            ++idp;
+                            players.put(idp, new Player(s1,s2,n1,s3));
+                            playersIndex.put(s2, idp);
+
+                            transfers.put(idp, new ArrayList<>());
+                            transfers.get(idp).add(s3);
+                            
 
                             break;
                         //Option BACK
@@ -79,49 +89,36 @@ public class MainMenu {
                 
                 //Option SHOW
                 case "2":
-                    System.out.println("Choose an option:\n 1. Show a Team\n 2. Show a Player\n 3. Back");
+                    System.out.println("\nChoose an option:\n 1. Show a Team\n 2. Show a Player\n 3. Back");
                     option = scanner.nextLine();
 
                     switch (option) {
                         //Option SHOW TEAM
                         case "1":
-                            System.out.println("Please enter team's name to get its information: ");
-                            while(true){
-                                s1=scanner.nextLine();
-                                if(teams.containsKey(s1)){
-                                    break;
-                                }
-                            System.out.println("Team not found. Please enter a valid team name:");
-                            }
 
-                            for(Map.Entry<String, Team> entry : teams.entrySet()){
-                                if(entry.getKey().equals(s1)){
-                                    Team t = entry.getValue();
-                                    System.out.println("Team Info:\nName: "+t.name+"\nCity: "+t.city+"\nTitles: "+t.titles+"\nYear Founded: "+t.yearFounded);
-                                }
-                            }
+                            int teamId = -1;
+
+                            teamId = idChecker("Please enter team's name to get its information: ", "Team not found. Please enter a valid team name:", scanner, teamsIndex);
+
+
+                            Team t = teams.get(teamId);
+                            System.out.println("\nTeam Info:\nName: "+t.name+"\nCity: "+t.city+"\nTitles: "+t.titles+"\nYear Founded: "+t.yearFounded);
                         
                             break;
 
                         //Option SHOW PLAYER
                         case "2":
-                            System.out.println("Please enter player's surname to get his information: ");
-                            while(true){
-                                s2=scanner.nextLine();
-                                if(players.containsKey(s2)){
-                                    break;
-                                }
-                                System.out.println("Player not found. Please enter a valid surname:");
-                            }
-                            for(Map.Entry<String, Player> entry : players.entrySet()){
-                                if(entry.getKey().equals(s2)){
-                                    Player p = entry.getValue();
-                                    System.out.println("Player Info:\nName: "+p.name+"\nSurname: "+p.sur+"\nAge: "+p.age+"\nTeam: "+p.team);
-                                }
-                            }
+
+                            int playerId = -1;
+
+                            playerId = idChecker("Please enter player's surname to get his information: ", "Player not found. Please enter a valid surname:", scanner, playersIndex);
+
+                            Player p = players.get(playerId);
+                            System.out.println("\nPlayer Info:\nName: "+p.name+"\nSurname: "+p.sur+"\nAge: "+p.age+"\nTeam: "+p.team);
+
+                            break;
                         //Option BACK
                         case "3":
-                            
                             break;
 
                         default:
@@ -138,8 +135,43 @@ public class MainMenu {
                 
                 //Option TRANSFER HISTORY
                 case "4":
-                    break;
 
+                    int ind = -1;
+
+                    ind = idChecker("Please enter player's surname to get his transfer history: ", "Player not found. Please enter a valid surname:", scanner, playersIndex);
+
+                    System.out.println("\nChoose an option:\n 1. Show Transfer History\n 2. Add Transfer\n 3. Back");
+                    option = scanner.nextLine();
+
+                    switch(option){
+                        case "1":
+                            
+                            List<String> history = transfers.get(ind);
+                            for(String team : history){
+                                System.out.println("-> " +team);
+                            }
+
+                            break;
+                        
+                        case "2":
+
+                            int teamInd = -1;
+                            teamInd = idChecker("Please enter the name of the team to which the player is transferring: ", "Team not found. Please enter a valid team name:", scanner, teamsIndex);
+
+                            String newTeam = teams.get(teamInd).getName();
+                            transfers.get(ind).add(newTeam);
+                            players.get(ind).setTeam(newTeam);
+
+                            break;
+
+                        case "3":
+                            break;
+
+                        default:
+                            System.out.println("Invalid option. Please try again.");
+                            break;
+                    }
+                    break;
                 //Option EXIT
                 case "5":
                     break;
@@ -152,4 +184,39 @@ public class MainMenu {
 
         scanner.close();
     }    
+
+
+    //A method that checks if a team or player exists in the database and returns its ID if it does, otherwise it keeps asking for a valid input
+    public static int idChecker(String s1, String s2, Scanner scanner, HashMap<String, Integer> index) {
+        
+        String s;
+        
+        System.out.println(s1);
+
+        while(true){
+            s=scanner.nextLine();
+            if(index.containsKey(s)){
+                return index.get(s);
+            }
+            System.out.println(s2);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

@@ -2,15 +2,22 @@
 
 public class Player {
 
-    String name, sur, team, id;
+    String name, sur, team;
     int age;
 
-    public Player(String name, String sur, int age, String team, String id) {
+    public Player(String name, String sur, int age, String team) {
         this.name = name;
         this.sur = sur;
         this.age = age;
         this.team = team;
-        this.id = id;
+    }
+
+    public String getSur() {
+        return sur;
+    }
+
+    public void setTeam(String team) {
+        this.team = team;
     }
 
 }
