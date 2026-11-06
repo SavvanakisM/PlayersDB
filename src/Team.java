@@ -14,4 +14,16 @@ public class Team {
         return name;
     }
 
+    public void setCity(String city){
+        this.city = city;
+    }
+
+    public void setTitles(int titles){
+        this.titles = titles;
+    }
+
+    public void setYearFounded(int yearFounded){
+        this.yearFounded = yearFounded;
+    }
+
 }

@@ -5,13 +5,17 @@ import java.util.Scanner;
 
 public class PlayersController {
 
+    private Scanner scanner;
+
+    public PlayersController(Scanner scanner){
+        this.scanner = scanner;
+    }
+
     HashMap<Integer, Player> players = new HashMap<>();
     HashMap<String, Integer> playersIndex = new HashMap<>();
     HashMap<Integer, List<String>> transfers = new HashMap<>();
 
     int idp=0;
-
-    Scanner scanner = new Scanner(System.in);
 
     //Add Player Method
     public void addPlayer(HashMap<String, Integer> teamsIndex){
@@ -51,9 +55,17 @@ public class PlayersController {
 
     }
 
+    //-----------------------------------------------------------------------------------------------------------------------------
+    //Get Players Index Method
     public HashMap<String, Integer> getPlayersIndex(){
         return playersIndex;
     }
+
+    //Get Players Method
+    public HashMap<Integer, Player> getPlayers() {
+        return players;
+    }
+    //-----------------------------------------------------------------------------------------------------------------------------
 
     //Show Transfer History Method
     public void showTransferHistory(int playerId){

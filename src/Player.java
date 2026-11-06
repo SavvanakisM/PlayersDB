@@ -16,6 +16,10 @@ public class Player {
         return sur;
     }
 
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     public void setTeam(String team) {
         this.team = team;
     }

@@ -3,20 +3,17 @@ import java.util.Scanner;
 
 public class Controller {
 
-    public void panel(){
+    private Scanner scanner;
+    private TeamsController teamsController; 
+    private PlayersController playersController;
+    
+    public Controller(Scanner scanner){
+        this.scanner = scanner;
+        this.teamsController = new TeamsController(scanner);
+        this.playersController = new PlayersController(scanner);
+    }
 
-        String option = "0";
-        Scanner scanner = new Scanner(System.in);
-
-        TeamsController teamsController = new TeamsController();
-        PlayersController playersController = new PlayersController();
-        
-        System.out.println("\nWelcome to the Players Database!");
-
-        while(!option.equals("5")){
-
-            System.out.println("\nChoose an option:\n 1. Add\n 2. Show\n 3. Edit\n 4. Transfer History\n 5. Exit\n");
-            option = scanner.nextLine();
+    public void panel(String option){
 
             switch (option) {
                 //Option ADD
@@ -65,6 +62,8 @@ public class Controller {
                     break;
                 //Option EDIT
                 case "3":
+                    Edit edit = new Edit(scanner, teamsController, playersController);
+                    edit.editPanel();
                     break;
                 //Option TRANSFER HISTORY
                 case "4":
@@ -98,6 +97,5 @@ public class Controller {
                     System.out.println("Invalid option. Please try again.");
                     break;
             }
-        }
     }
 }

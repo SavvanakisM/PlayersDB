@@ -3,12 +3,16 @@ import java.util.Scanner;
 
 public class TeamsController {
 
+    private Scanner scanner;
+
+    public TeamsController(Scanner scanner){
+        this.scanner = scanner;
+    }
+
     HashMap<Integer, Team> teams = new HashMap<>();
     HashMap<String, Integer> teamsIndex = new HashMap<>();
 
     int idt = 0;
-    
-    Scanner scanner = new Scanner(System.in);
 
     //Add Team Method
     public void addTeam() {
